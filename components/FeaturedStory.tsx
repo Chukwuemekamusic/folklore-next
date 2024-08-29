@@ -31,7 +31,7 @@ const homepageStories = [
 const FeaturedStory = () => {
   return (
     <section className="container mx-auto">
-        <h1 className="text-2xl md:text-4xl font-bold text-center mb-4">Featured Story</h1>
+        <h1 className="text-2xl md:text-3xlxl font-bold text-center mb-4">Featured Story</h1>
         {/* <div className="border-t border-primary w-full max-w-md mx-auto mb-4 mt-2"></div> */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">   
         {homepageStories.map((story) => (
