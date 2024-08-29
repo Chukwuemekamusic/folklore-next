@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id        String    @default(cuid()) @id
+  title     String
+  slug      String    @unique
+  content   String
+  published Boolean   @default(false)
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  author    User   @relation(fields: [authorId], references: [id])
+  authorId  String
+
+  @@index(slug)
+}
+model User {
+  id            String    @default(cuid()) @id
+  name          String?
+  email         String    @unique
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  posts         Post[]
+  gender        Gender?   @default(NOT_SPECIFIED)
+  isWriter      Boolean   @default(false)
+  isAdmin       Boolean   @default(false)
+  stories       Story[]
+  ratings       StoryRating[]
+  comments      StoryComment[]
+  @@map(name: "users")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  NOT_SPECIFIED
+}
+
+enum StoryStatus {
+  DRAFT
+  PUBLISHED
+  UNLISTED
+}
+
+model Story {
+  id            String       @default(cuid()) @id
+  title         String
+  description   String
+  image         String?
+  continent     Continent @relation(fields: [continentId], references: [id])
+  continentId   String
+  legend        Legend @relation(fields: [legendId], references: [id])
+  legendId      String
+  author        User @relation(fields: [authorId], references: [id])
+  authorId      String
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  views         Int @default(0)
+  rating        Float @default(2.5)  // TODO CALCULATE RATING FROM RATINGS
+  ratings       StoryRating[]
+  // tags          StoryTag[]
+  tags          Tag[]
+  comments      StoryComment[]
+  status        StoryStatus @default(DRAFT)
+  homepage      Boolean @default(false)
+  homepagePosition Int? @unique
+  publishedAt   DateTime?
+  @@map(name: "stories")
+}
+
+model Tag {
+  id            String       @default(cuid()) @id
+  name          String
+  stories       Story[]
+  @@map(name: "tags")
+}
+
+// model StoryTag {
+//   // id            String       @default(cuid()) @id
+//   story         Story @relation(fields: [storyId], references: [id])
+//   storyId       String
+//   tag           Tag @relation(fields: [tagId], references: [id])
+//   tagId         String
+//   @@id([storyId, tagId])
+//   @@map(name: "story_tags")
+// }
+
+model  StoryComment {
+  id            String       @default(cuid()) @id
+  comment       String
+  story         Story @relation(fields: [storyId], references: [id])
+  storyId       String
+  user          User @relation(fields: [userId], references: [id])
+  userId        String
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  @@map(name: "story_comments")
+}
+
+model StoryRating {
+  id            String       @default(cuid()) @id
+  rating        Int
+  story         Story @relation(fields: [storyId], references: [id])
+  storyId       String
+  user          User @relation(fields: [userId], references: [id])
+  userId        String
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+
+  @@unique([storyId, userId])
+  @@map(name: "story_ratings")
+}
+
+
+model Continent {
+  id            String       @default(cuid()) @id
+  name          String       @unique
+  description   String
+  population    Int
+  area          Float
+  image         String?
+  stories        Story[]
+  legends        Legend[] @relation("LegendContinent")
+  @@map(name: "continents")
+}
+
+model Legend {
+  id            String       @default(cuid()) @id
+  name          String       @unique
+  description   String
+  image         String?
+  continent     Continent[] @relation("LegendContinent")
+  stories       Story[] 
+  // regions        LegendRegion[]
+  @@map(name: "legends")
+}
+
+// model Region {
+//   id            String       @default(cuid()) @id
+//   name          String
+//   continent     Continent @relation(fields: [continentId], references: [id])
+//   continentId   String
+//   legends       LegendRegion[]
+// }
+
+// model LegendRegion {
+//   legend     Legend @relation(fields: [legendId], references: [id])
+//   legendId   String
+//   region     Region @relation(fields: [regionId], references: [id])
+//   regionId   String
+
+//   @@id([legendId, regionId]) // Composite primary key
+//   @@map(name: "legend_regions")
+// }
+
+// model Admin {
+//   id            String       @default(cuid()) @id
+//   email         String    @unique
+//   password      String
+//   username      String
+//   firstName     String
+//   lastName      String
+//   gender        Gender?
+//   createdAt     DateTime  @default(now()) @map(name: "created_at")
+//   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+//   @@map(name: "admins")
+// }
+
