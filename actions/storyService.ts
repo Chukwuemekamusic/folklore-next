@@ -16,6 +16,37 @@ export async function getStories(orderBy: OrderBy = 'rating', orderDirection: Or
       updatedAt: true,
       continent: true,
       legend: true,
+      image: true,
+      status: true,
+      author: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+    orderBy: {
+      [orderBy]: orderDirection,
+    },
+  });
+  return stories;
+}
+export async function getStoriesByUser(userId: string, orderBy: OrderBy = 'createdAt', orderDirection: OrderDirection = 'desc') {
+  const stories = await prisma.story.findMany({
+    where: {
+      authorId: userId,
+    },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      rating: true,
+      createdAt: true,
+      updatedAt: true,
+      continent: true,
+      legend: true,
+      image: true,
       author: {
         select: {
           id: true,

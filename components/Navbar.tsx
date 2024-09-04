@@ -8,21 +8,26 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { MapPin, Book } from "lucide-react";
+import { MapPin, Book, CircleUser } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 import { getAllContinentsWithStoryCount, getLegendsOfAvailableStories } from "@/actions/storyService";
+import {RegisterLink, LoginLink, LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
+import {getKindeServerSession} from "@kinde-oss/kinde-auth-nextjs/server";
 
 
 const Navbar = async () => {
   const continents = await getAllContinentsWithStoryCount();
   const legends = await getLegendsOfAvailableStories();
+  const { getUser } = getKindeServerSession();
+  const session = await getUser();
   return (
-    <header className="flex items-center justify-between p-6 md:p-8 bg-muted">
+    <header className="flex items-center justify-between p-6 md:p-8 bg-muted/30">
       <nav className="flex items-center justify-between w-full">
         <div className="flex items-center">
-          <h1 className="text-xl font-bold">Folklore</h1>
+          <h1 className="text-xl font-semibold">Folk<span className="font-bold">lore</span></h1>
         </div>
         
         <ul className="flex items-center space-x-6 ml-auto">
@@ -75,6 +80,42 @@ const Navbar = async () => {
           </li>
           <li className="hover:text-gray-400">
             <Link href="/stories">All Stories</Link>
+          </li>
+          
+          {/* TODO: this should show after login */}
+          <li>
+          <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="rounded-full"
+                >
+                  <CircleUser className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {session ? (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard">Dashboard</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <LogoutLink>Log out</LogoutLink>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <LoginLink>Login</LoginLink>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <RegisterLink>Register</RegisterLink>
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </li>
         </ul>
       </nav>

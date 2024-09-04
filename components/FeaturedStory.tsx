@@ -31,8 +31,8 @@ const homepageStories = [
 const FeaturedStory = () => {
   return (
     <section className="container mx-auto">
-        <h1 className="text-2xl md:text-3xlxl font-bold text-center mb-4">Featured Story</h1>
-        {/* <div className="border-t border-primary w-full max-w-md mx-auto mb-4 mt-2"></div> */}
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-4">Featured Story</h1>
+        {/* <div className="header-line mb-4"></div> */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">   
         {homepageStories.map((story) => (
             <Card key={story.id} className="max-w-sm mx-auto shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Using Shadcn Card component */}
@@ -41,13 +41,13 @@ const FeaturedStory = () => {
                     <Image src={story.image} alt={story.title} className="w-full h-48 object-cover" width={100} height={100} /> 
                     <p className="text-xl font-bold mb-2 text-center mt-4">{story.title}</p>
                 </CardTitle>
-                <CardDescription className="text-gray-700 px-4">
+                <CardDescription className="text-primary px-4">
                     {story.description}
                 </CardDescription>
             </CardHeader>
             <CardFooter className="flex justify-center mt-4">
                 <Link href={`/stories/${story.id}`}>
-                    <Button>Read More</Button>
+                    <Button variant="outline">Read More</Button>
                 </Link>
             </CardFooter>
             </Card>

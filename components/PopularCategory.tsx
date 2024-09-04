@@ -14,8 +14,8 @@ export default function PopularCategory() {
       className="container mx-auto mt-10"
       suppressHydrationWarning={true}
     >
-      <h1 className="text-2xl md:text-3xl font-bold mb-4 text-center">Popular Stories</h1>
-      <div className="header-line mb-4"></div>
+      <h1 className="text-2xl md:text-3xl font-bold mb-4 text-center">Popular Legends</h1>
+      {/* <div className="header-line mb-4"></div> */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {legends.map((legend) => (
           <Card

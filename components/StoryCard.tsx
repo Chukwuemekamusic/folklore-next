@@ -9,6 +9,7 @@ interface StoryCardProps {
     title: string;
     description: string;
     rating: number;
+    // image?: string;
   };
 }
  {/* TODO: change .id to .slug */}

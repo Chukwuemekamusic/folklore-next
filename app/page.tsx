@@ -5,7 +5,7 @@ import PopularCategory from "@/components/PopularCategory";
 
 export default function Home() {
   return (
-    <div >
+    <div className="container mx-auto mt-10">
 
       <CarouselImage />
       <FeaturedStory />

@@ -52,8 +52,8 @@ export default function CarouselImage() {
     <div className="text-center">
       <div className="container">
         <div className="row justify-content-center">
-          <div className="col-10 bg-custom d-none d-lg-block py-3 px-0 mb-7">
-            <h1 className="text-2xl font-bold">Explore the World's Myth and Legends</h1>
+          <div className="col-10 bg-custom d-none d-lg-block py-3 px-0 mb-7 mt-4">
+            <h1 className="text-2xl font-bold text-primary-800">Explore the World's Myth and Legends</h1>
             <div className="border-t border-primary w-full max-w-md mx-auto  mt-2"></div>
             <p className="leading-tight">Discover stories from different cultures and traditions</p>
           </div>
