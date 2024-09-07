@@ -2,17 +2,31 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Atom } from "lucide-react";
-import {getAllContinentsWithStoryCount} from "@/actions/storyService"
-import { UploadDropzone } from "@/lib/UploadthingComponent";
+import {getAllContinentsWithLegends} from "@/actions/storyService"
 import CreateStoryForm from "@/components/Dashboard/Create/CreateForm";
 
+
+//   export async function checkLegends() {
+//     const legends = await prisma.legend.findMany({
+//       include: {
+//         continent: {
+//           select: {
+//             id: true,
+//             name: true,
+//           },
+//         },
+//       },
+//     });
+//     console.log('All legends:', JSON.stringify(legends, null, 2));
+//     return legends;
+//   }
+
+
 export default async function CreateStoryPage() {
-    const continents = await getAllContinentsWithStoryCount();
+    const continents = await getAllContinentsWithLegends();
+  
+    // console.log('relations',continents[3].legends)
+
   return (
     <>
       <div className="flex items-center mt-5">

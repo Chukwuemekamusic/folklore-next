@@ -139,7 +139,7 @@ model Continent {
   area          Float
   image         String?
   stories        Story[]
-  legends        Legend[] @relation("LegendContinent")
+  legends        Legend[]
   @@map(name: "continents")
 }
 
@@ -148,9 +148,8 @@ model Legend {
   name          String       @unique
   description   String
   image         String?
-  continent     Continent[] @relation("LegendContinent")
+  continent     Continent[] 
   stories       Story[] 
-  // regions        LegendRegion[]
   @@map(name: "legends")
 }
 

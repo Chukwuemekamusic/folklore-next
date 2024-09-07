@@ -11,6 +11,7 @@
   "dependencies": {
     "@conform-to/react": "^1.1.5",
     "@conform-to/zod": "^1.1.5",
+    "@hookform/resolvers": "^3.9.0",
     "@kinde-oss/kinde-auth-nextjs": "^2.3.8",
     "@prisma/client": "^5.18.0",
     "@radix-ui/react-accordion": "^1.2.0",
@@ -24,6 +25,7 @@
     "@radix-ui/react-toast": "^1.2.1",
     "@uploadthing/react": "^6.7.2",
     "antd": "^5.20.3",
+    "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
@@ -31,8 +33,11 @@
     "lucide-react": "^0.417.0",
     "next": "14.2.5",
     "next-themes": "^0.3.0",
+    "novel": "^0.5.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-hook-form": "^7.53.0",
+    "react-slugify": "^4.0.1",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
@@ -40,6 +45,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

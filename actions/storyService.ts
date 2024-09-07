@@ -1,3 +1,4 @@
+'use server'
 import prisma from "@/lib/db";
 import { StoryStatus } from "@prisma/client";
 
@@ -5,7 +6,14 @@ import { StoryStatus } from "@prisma/client";
 type OrderBy = 'rating' | 'createdAt' | 'updatedAt';
 type OrderDirection = 'asc' | 'desc';
 
-export async function getStories(orderBy: OrderBy = 'rating', orderDirection: OrderDirection = 'desc') {
+type GetStoriesParams = {
+  orderBy?: OrderBy;
+  orderDirection?: OrderDirection;
+  status?: StoryStatus
+  userId?: string
+}
+
+export async function getStories({orderBy = 'rating', orderDirection = 'desc', status = 'PUBLISHED'}: GetStoriesParams = {}) {
   const stories = await prisma.story.findMany({
     select: {
       id: true,
@@ -15,7 +23,11 @@ export async function getStories(orderBy: OrderBy = 'rating', orderDirection: Or
       createdAt: true,
       updatedAt: true,
       continent: true,
-      legend: true,
+      legend: {
+        select: {
+          name: true,
+        },
+      },
       image: true,
       status: true,
       author: {
@@ -32,7 +44,7 @@ export async function getStories(orderBy: OrderBy = 'rating', orderDirection: Or
   });
   return stories;
 }
-export async function getStoriesByUser(userId: string, orderBy: OrderBy = 'createdAt', orderDirection: OrderDirection = 'desc') {
+export async function getStoriesByUser({userId, orderBy = 'createdAt', orderDirection = 'desc'}: GetStoriesParams) {
   const stories = await prisma.story.findMany({
     where: {
       authorId: userId,
@@ -44,8 +56,18 @@ export async function getStoriesByUser(userId: string, orderBy: OrderBy = 'creat
       rating: true,
       createdAt: true,
       updatedAt: true,
-      continent: true,
-      legend: true,
+      continent: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      legend: {
+        select: {
+          name: true,
+        },
+      },
+      status: true,
       image: true,
       author: {
         select: {
@@ -136,6 +158,22 @@ export async function getAllContinentsWithStoryCount() {
       _count: {
         select: {
           stories: true,
+        },
+      },
+    },
+  });
+  return continents;
+}
+
+export async function getAllContinentsWithLegends() {
+  const continents = await prisma.continent.findMany({
+    select: {
+      id: true,
+      name: true,
+      legends: {
+        select: {
+          id: true,
+          name: true,
         },
       },
     },

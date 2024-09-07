@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { CircleUser, Home, Globe, DollarSign, PlusCircle } from "lucide-react";
+import { CircleUser, Home, Globe, DollarSign, PlusCircle, Table } from "lucide-react";
 import DashboardItems from "@/components/Dashboard/DashboardItems";
 
 export const navLinks = [
@@ -18,6 +18,11 @@ export const navLinks = [
     name: "Dashboard",
     href: "/dashboard",
     icon: Home,
+  },
+  {
+    name: "Table View",
+    href: "/dashboard/table_view",
+    icon: Table,
   },
   {
     name: "Sites",
@@ -34,6 +39,7 @@ export const navLinks = [
     href: "/dashboard/create",
     icon: PlusCircle,
   },
+  
 ];
 
 export default function DashboardLayout({

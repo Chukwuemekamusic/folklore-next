@@ -20,6 +20,9 @@ interface StoryCardProps {
     description: string;
     rating: number;
     image?: string;
+    legend: {
+      name: string;
+    }
   };
 }
 
@@ -30,6 +33,7 @@ export default function StoryCard2({ story }: StoryCardProps) {
         {/* <Image src={story.image || defaultImage} alt={story.title} width={400} height={200} className="w-full  object-cover rounded-t-lg h-[200px]" /> */}
         <CardTitle>{story.title}</CardTitle>
         <CardDescription>{story.description}</CardDescription>
+        <p className="text-sm text-muted-foreground font-semibold mt-1">{story.legend.name}</p>
       </CardHeader>
       <CardContent className="flex justify-end  ">
       <StarRate value={story.rating} disabled={true} />
