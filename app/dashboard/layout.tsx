@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { CircleUser, Home, Globe, DollarSign, PlusCircle, Table } from "lucide-react";
+import { CircleUser, Home, Globe, DollarSign, PlusCircle, Table, Image } from "lucide-react";
 import DashboardItems from "@/components/Dashboard/DashboardItems";
 
 export const navLinks = [
@@ -24,15 +24,20 @@ export const navLinks = [
     href: "/dashboard/table_view",
     icon: Table,
   },
+//   {
+//     name: "Sites",
+//     href: "/dashboard/sites",
+//     icon: Globe,
+//   },
+//   {
+//     name: "Pricing",
+//     href: "/dashboard/pricing",
+//     icon: DollarSign,
+//   },
   {
-    name: "Sites",
-    href: "/dashboard/sites",
-    icon: Globe,
-  },
-  {
-    name: "Pricing",
-    href: "/dashboard/pricing",
-    icon: DollarSign,
+    name: "Images used",
+    href: "/dashboard/images",
+    icon: Image,
   },
   {
     name: "Create Story",

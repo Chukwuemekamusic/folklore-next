@@ -25,7 +25,7 @@ const TailwindEditor = ({ initialValue, onChange }: EditorWrapperProps) => {
   return (
     <EditorRoot>
       <EditorContent
-      className="prose prose-lg dark:prose-invert prose-headings:font-title font-default focus:outline-none max-w-full border p-5 rounded-md min-h-[300px]"
+      className="w-full border border-muted rounded-md p-4 min-h-[500px]"
       editorProps={{
         handleDOMEvents: {
           keydown: (_view, event) => handleCommandNavigation(event),

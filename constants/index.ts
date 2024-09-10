@@ -1,3 +1,5 @@
+import { StoryStatus } from "@prisma/client";
+
 export const legends = [
     {
       name: "Greek Myths",
@@ -77,5 +79,38 @@ export const legends = [
         area: 17840 // Example area in square kilometers
     }
 ];
+// enum StoryStatus {
+//   DRAFT
+//   PUBLISHED
+//   UNLISTED
+// }
+export const storyStatusTyped: Array<{ name: StoryStatus; description: string }> = [
+    {
+        name: StoryStatus.DRAFT,
+        description: "Draft",
+    },
+    {
+        name: StoryStatus.PUBLISHED,
+        description: "Published",
+    },
+    {
+        name: StoryStatus.UNLISTED,
+        description: "Unlisted",
+    },
+]
 
+export const storyStatus = [
+  {
+      name: "DRAFT", 
+      description: "Draft",
+  },
+  {
+      name: "PUBLISHED", 
+      description: "Published",
+  },
+  {
+      name: "UNLISTED", 
+      description: "Unlisted",
+  },
+] as const;
 

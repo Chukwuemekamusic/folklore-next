@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Atom, Trash } from "lucide-react";
+import { Atom, Loader2, Trash } from "lucide-react";
 import { UploadDropzone } from "@/lib/UploadthingComponent";
 import Image from "next/image";
 import { toast } from "sonner";
@@ -29,6 +29,7 @@ import axios from "axios";
 import slugify from "react-slugify";
 import { useRouter } from "next/navigation";
 import { storyStatus } from "@/constants";
+import { editStoryAction } from "@/actions/createService";
 
 interface Legend {
   id: string;
@@ -41,20 +42,58 @@ interface ContinentWithLegends {
   legends: Legend[];
 }
 
-export default function CreateStoryForm({
-  continentData,
-}: {
+// Define the Story interface
+interface StoryType {
+    id: string;
+    title: string;
+    description: string;
+    content: any;
+    image: string | null;
+    slug: string | null;
+    views: number;
+    rating: number;
+    status: string;
+    continent: {
+      id: string;
+      name: string;
+    };
+    legend: {
+      id: string;
+      name: string;
+    };
+    tags: {
+      id: string;
+      name: string;
+    }[];
+    author: {
+      id: string;
+      name: string | null;
+      email: string;
+    };
+    createdAt: Date;
+    updatedAt: Date;
+  }
+  
+
+interface EditArticleFormProps {    
   continentData: ContinentWithLegends[];
-}) {
-  const [selectedContinent, setSelectedContinent] = useState("");
-  const [selectedLegend, setSelectedLegend] = useState("");
-  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
-  const [contentValue, setContentValue] = useState<JSONContent | undefined>(undefined);
-  const [title, setTitle] = useState<string | undefined>(undefined);
-  const [slug, setSlug] = useState<string | undefined>(undefined);
+  story: StoryType;
+}
+
+
+export default function EditArticleForm({
+  story,
+  continentData,
+}: EditArticleFormProps
+) {
+  const [selectedContinent, setSelectedContinent] = useState(story.continent.name);
+  const [selectedLegend, setSelectedLegend] = useState(story.legend.id);
+  const [imageUrl, setImageUrl] = useState<string | null | undefined>(story.image);
+  const [contentValue, setContentValue] = useState<JSONContent | undefined>(story.content);
+  const [title, setTitle] = useState<string | undefined>(story.title);
+  const [slug, setSlug] = useState<string |null | undefined>(story.slug);
   const [slugStatusLoading, setSlugStatusLoading] = useState<boolean>(false);
   const router = useRouter();
-
   // const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -68,14 +107,14 @@ export default function CreateStoryForm({
   } = useForm({
     resolver: zodResolver(createStorySchema),
     defaultValues: {
-      title: "",
-      description: "",
-      slug: "",
-      continentName: "",
-      legendId: "",
-      content: "TODO",
-      image: "",
-      status: "DRAFT",
+      title: story.title,
+      description: story.description,
+      slug: story.slug || "",
+      continentName: story.continent.name,
+      legendId: story.legend.id,
+      content: JSON.stringify(story.content),
+      image: story.image || "",
+      status: story.status,
     },
   });
 
@@ -103,32 +142,40 @@ export default function CreateStoryForm({
     return slug;
   };
 
+
   const onSubmit = async (data: TcreateStorySchema) => {
+    console.log('entered onSubmit')
     if (imageUrl) {
       data.image = imageUrl;
     }
-    // This is to fix the content field to be a stringified JSON of the contentValue -- TODO: fix the editor to send the content as a stringified JSON
     data.content = JSON.stringify(contentValue);
     console.log("data", data);
 
     data.slug = await checkSlugUniqueness(data.slug);
 
     try {
-      const response = await axios.post("/api/createStory", data);
-      toast.success(response.data.message);
+      const response = await editStoryAction(null, data, story.id, story.author.id);
+
+      if (response.error) {
+        if (typeof response.error === 'string') {
+          toast.error(response.error);
+        } else if (typeof response.error === 'object') {
+          Object.keys(response.error).forEach((key) => {
+            setError(key as keyof TcreateStorySchema, { message: response.error[key] });
+          });
+        }
+      } else {  
+        toast.success(response.message);
       setTimeout(() => {
-        router.push("/dashboard");
-      }, 2000);
-    } catch (error) {
-      // Check if the error is an Axios error
-      if (axios.isAxiosError(error) && error.response) {
-        const errors = error.response.data.error || {};
-        Object.keys(errors).forEach((key) => {
-          setError(key as keyof TcreateStorySchema, { message: errors[key] });
-        });
-      } else {
-        toast.error("Error creating story");
+          router.push("/dashboard");
+        }, 1500);
       }
+    } catch (error) {
+        if (error instanceof Error) {
+            toast.error(error.message);
+          } else {
+            toast.error("An unexpected error occurred.");
+          }
     }
   };
 
@@ -171,6 +218,7 @@ export default function CreateStoryForm({
   };
 
   return (
+    // handleSubmit(onSubmit)
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <Label>Title</Label>
@@ -202,7 +250,7 @@ export default function CreateStoryForm({
         <Input
           placeholder="The slug is used to generate the URL of your story and must be unique."
           {...register("slug")}
-          value={slug}
+          value={slug || ""}
           onChange={(e) => setSlug(e.target.value)}
           readOnly
         />
@@ -227,6 +275,7 @@ export default function CreateStoryForm({
           name="continentName"
           render={({ field }) => (
             <Select
+                value={field.value}
               onValueChange={(value) => {
                 setSelectedContinent(value);
                 field.onChange(value);
@@ -260,6 +309,7 @@ export default function CreateStoryForm({
             name="legendId"
             render={({ field }) => (
               <Select
+                value={field.value}
                 onValueChange={(value) => {
                   setSelectedLegend(value);
                   field.onChange(value);
@@ -288,9 +338,9 @@ export default function CreateStoryForm({
         </div>
       )}
 
-      {/* #TODO give the option to choose pics from images used or from the user's file */}
       <div className="flex flex-col gap-2 mb-2">
         <Label>Cover Image</Label>
+        {/* {imageUrl && <Image src={imageUrl} alt="Cover Image" />} */}
         {imageUrl ? (
           <div className="relative w-full h-40 mb-2">
             <Image
@@ -321,28 +371,12 @@ export default function CreateStoryForm({
               toast.error("Error uploading image..");
             }}
           />
-        )} 
-        {/* <div className="flex flex-col gap-2 mb-2">
-        <Label>Or select from your images</Label>
-        <div className="flex flex-wrap gap-2">
-          {userImages.map((img) => (
-            <div key={img} className="relative w-20 h-20">
-              <Image
-                src={img}
-                alt="User Image"
-                className="object-cover w-full h-full cursor-pointer"
-                width={80}
-                height={80}
-                onClick={() => setImageUrl(img)}
-              />
-            </div>
-          ))}
-        </div>
-      </div> */}
+        )}
         {errors.image && (
           <p className="text-sm text-destructive">{errors.image.message}</p>
         )}
       </div>
+
       <div className="flex flex-col gap-2">
         <Label>Story Content</Label>
         <p className="text-sm text-muted-foreground">
@@ -354,7 +388,7 @@ export default function CreateStoryForm({
           value={JSON.stringify(contentValue)}
           {...register("content")}
         />
-        <TailwindEditor initialValue={contentValue} onChange={setContentValue}/>
+        <TailwindEditor initialValue={contentValue} onChange={setContentValue} />
       </div>
       <div className="flex flex-col gap-2">
         <Label>Story Status</Label>
@@ -382,8 +416,15 @@ export default function CreateStoryForm({
             </Select>
           )}
         />
+        {errors.status && (
+          <p className="text-sm text-destructive">{errors.status.message}</p>
+        )}
       </div>
-      <Button type="submit">Create Story</Button>
+      {isSubmitting ? (
+        <Button type="submit"  className="w-fit"><Loader2 className="size-4 mr-2 animate-spin" />Update Story</Button>
+      ) : (
+        <Button type="submit"  className="w-fit">Update Story</Button>
+      )}
     </form>
   );
 }

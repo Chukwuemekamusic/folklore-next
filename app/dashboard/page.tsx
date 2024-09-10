@@ -12,15 +12,15 @@ import { getStoriesByUser, getStories } from "@/actions/storyService";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { LucidePlus, PlusCircle } from "lucide-react";
+import { Edit, Eye, LucidePlus, PlusCircle, Trash2 } from "lucide-react";
 import { EmptyState } from "@/components/Dashboard/EmptyState";
 import { format } from "date-fns";
 import { getAllContinentsWithLegends } from "@/actions/storyService";
 
 export default async function DashboardPage() {
   const user = await requireUser();
-  // const stories = await getStoriesByUser(user.id);
-  const stories = await getStories();
+  const stories = await getStoriesByUser({ userId: user.id });
+//   const stories = await getStories();
   const continents = await getAllContinentsWithLegends();
   const encodedContinents = encodeURIComponent(JSON.stringify(continents));
   return (
@@ -33,6 +33,7 @@ export default async function DashboardPage() {
           </Link>
         </Button>
       </div>
+      
       <h1 className="text-2xl font-bold mb-4">Your Stories</h1>
       {stories.length === 0 ? (
         <EmptyState
@@ -66,15 +67,31 @@ export default async function DashboardPage() {
                   </span>
                 </div>
                 <CardTitle>{story.title}</CardTitle>
-                <CardDescription>{story.description}</CardDescription>
+                <CardDescription className="line-clamp-3">
+                  {story.description.length > 100 
+                    ? `${story.description.slice(0, 100)}...` 
+                    : story.description}
+                </CardDescription>
               </CardHeader>
-              <CardFooter>
+              <CardFooter className="flex flex-col space-y-2">
                 {/* <p>Rating: {story.rating}</p> */}
+                <div className="flex w-full space-x-2 ">
                 <Button asChild className="w-full mr-2" variant="secondary">
-                  <Link href={`/stories/${story.id}`}>Read Story</Link>
+                  <Link href={`/stories/${story.id}`}><Eye className="mr-2 size-4" /> Read Story</Link>
                 </Button>
                 <Button asChild className="w-full">
-                  <Link href={`/dashboard/edit/${story.id}`}>Edit Story</Link>
+                  <Link href={`/dashboard/edit/${story.id}`}><Edit className="mr-2 size-4" /> Edit Story</Link>
+                </Button>
+                </div>
+               
+                <Button
+                  variant="destructive"
+                  className="w-full mt-3"
+                  asChild
+                >
+                    <Link href={`/dashboard/delete/${story.id}`}>
+                  <Trash2 className="mr-2 size-4" /> Delete
+                </Link>
                 </Button>
               </CardFooter>
             </Card>

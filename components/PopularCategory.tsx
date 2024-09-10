@@ -14,7 +14,7 @@ export default function PopularCategory() {
       className="container mx-auto mt-10"
       suppressHydrationWarning={true}
     >
-      <h1 className="text-2xl md:text-3xl font-bold mb-4 text-center">Popular Legends</h1>
+      <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-center">Popular Legends</h1>
       {/* <div className="header-line mb-4"></div> */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {legends.map((legend) => (
@@ -33,13 +33,13 @@ export default function PopularCategory() {
                     width={100}
                     height={100}
                   />
-                  <p className="text-xl font-bold mb-2 text-center">
+                  <p className="text-lg md:text-xl font-bold text-primary-800 mb-2 text-center mt-4">
                     {legend.name}
                   </p>
                 </CardTitle>
               </Link>
               <CardDescription
-                className="text-gray-700 px-4
+                className="text-primary px-4
             mb-4"
               >
                 {legend.description}

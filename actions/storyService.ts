@@ -87,14 +87,16 @@ export async function getStoriesByUser({userId, orderBy = 'createdAt', orderDire
 export async function getStory(id: string) {
   const story = await prisma.story.findUnique({
     where: { id },
-    include: {
-      author: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
-      },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      content: true,
+      image: true,
+      slug: true,
+      views: true,
+      rating: true,
+      status: true,
       continent: {
         select: {
           id: true,
@@ -106,15 +108,27 @@ export async function getStory(id: string) {
           id: true,
           name: true,
         },
+      },
+      tags: {
+        select: {
+          id: true,
+          name: true,
         },
-        tags: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+      },  
+    author: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    },
+      createdAt: true,
+      updatedAt: true,
     },
   });
+  if (!story) {
+    return null;
+  }
   return story;
 }
 
@@ -207,69 +221,19 @@ export async function getLegendsOfAvailableStories() {
   return legends.filter((legend) => legend._count.stories > 0);
 }
 
-// async function rateStory(userId: string, storyId: string, newRating: number) {
-//     const existingRating = await prisma.storyRating.findUnique({
-//         where: {
-//             userId_storyId: {
-//                 userId: userId,
-//                 storyId: storyId,
-//             },
-//         },
-//     });
-  
-//     if (existingRating) {
-//         // Update the existing rating
-//         return await prisma.storyRating.update({
-//             where: { id: existingRating.id },
-//             data: { rating: newRating },
-//         });
-//     } else {
-//         // Create a new rating
-//         return await prisma.storyRating.create({
-//             data: {
-//                 rating: newRating,
-//                 storyId: storyId,
-//                 userId: userId,
-//             },
-//         });
-//     }
-//   }
+export async function getUniqueImageLinksByUser(userId: string) {
+  const uniqueImages = await prisma.story.findMany({
+    where: {
+      authorId: userId,
+      image: {
+        not: null,
+      },
+    },
+    select: {
+      image: true,
+    },
+    distinct: ['image'],
+  });
 
-
-
-// async function calculateAverageRating(storyId) {
-//     const ratings = await prisma.storyRating.findMany({
-//         where: { storyId: storyId },
-//         select: { rating: true }
-//     });
-
-//     if (ratings.length === 0) {
-//         return 2.5; // Return default rating if no ratings exist
-//     }
-
-//     const total = ratings.reduce((sum, rating) => sum + rating.rating, 0);
-//     const average = total / ratings.length;
-
-//     return average;
-// }
-
-
-// async function addRating(storyId, userId, ratingValue) {
-//     // Add the new rating
-//     await prisma.storyRating.create({
-//         data: {
-//             storyId: storyId,
-//             userId: userId,
-//             rating: ratingValue
-//         }
-//     });
-
-//     // Recalculate the average rating
-//     const averageRating = await calculateAverageRating(storyId);
-
-//     // Update the story's average rating
-//     await prisma.story.update({
-//         where: { id: storyId },
-//         data: { rating: averageRating }
-//     });
-// }
+  return uniqueImages.map(story => story.image);
+}

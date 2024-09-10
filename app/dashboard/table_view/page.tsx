@@ -40,9 +40,10 @@ export default async function TableViewPage() {
   const stories = await getStoriesByUser({ userId: user.id });
   const continents = await getAllContinentsWithLegends();
   const encodedContinents = encodeURIComponent(JSON.stringify(continents));
+  
   return (
     <div className="container mx-auto mt-4 px-4">
-      <div className="flex justify-end gap-x-4mb-4">
+      <div className="flex justify-end gap-x-4 mb-4">
         <Button asChild>
           <Link href="/dashboard/create" className="flex items-center gap-2">
             <PlusCircle className="size-5" />
@@ -95,7 +96,11 @@ export default async function TableViewPage() {
                         />
                       </TableCell>
                       <TableCell>{story.title}</TableCell>
-                      <TableCell>{story.description}</TableCell>
+                      <TableCell>
+                        {story.description.length > 100 
+                          ? `${story.description.slice(0, 100)}...` 
+                          : story.description}
+                      </TableCell>
                       <TableCell>{story.status}</TableCell>
                       <TableCell>{story.continent.name}</TableCell>
                       <TableCell>{story.legend.name}</TableCell>

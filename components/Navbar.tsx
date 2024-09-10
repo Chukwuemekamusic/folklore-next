@@ -29,6 +29,8 @@ const Navbar = async () => {
         <div className="flex items-center">
           <h1 className="text-xl font-semibold">Folk<span className="font-bold">lore</span></h1>
         </div>
+
+        {/* TODO: put everything under this in a dropdown menu on smaller screens */}
         
         <ul className="flex items-center space-x-6 ml-auto">
           <li className="">
@@ -95,7 +97,7 @@ const Navbar = async () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {session ? (
+                {session && session.email ? (
                   <>
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard">Dashboard</Link>
