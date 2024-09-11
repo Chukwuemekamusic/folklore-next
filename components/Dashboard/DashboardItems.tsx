@@ -1,9 +1,33 @@
 'use client'
 
-import { navLinks } from "@/app/dashboard/layout";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Home, Table, Image, PlusCircle } from "lucide-react";
+
+export const navLinks = [
+  {
+    name: "Dashboard",
+    href: "/dashboard",
+    icon: Home,
+  },
+  {
+    name: "Table View",
+    href: "/dashboard/table_view",
+    icon: Table,
+  },
+  {
+    name: "Images used",
+    href: "/dashboard/images",
+    icon: Image,
+  },
+  {
+    name: "Create Story",
+    href: "/dashboard/create",
+    icon: PlusCircle,
+  },
+  
+];
 
 export default function DashboardItems() {
   const pathname = usePathname();

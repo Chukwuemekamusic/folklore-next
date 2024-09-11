@@ -95,6 +95,7 @@ export default function EditArticleForm({
   const [slugStatusLoading, setSlugStatusLoading] = useState<boolean>(false);
   const router = useRouter();
   // const [isSubmitting, setIsSubmitting] = useState(false);
+  const tags = story.tags.map(tag => tag.name).join(', ');
 
   const {
     register,
@@ -115,6 +116,7 @@ export default function EditArticleForm({
       content: JSON.stringify(story.content),
       image: story.image || "",
       status: story.status,
+      tags: tags,
     },
   });
 
@@ -220,6 +222,8 @@ export default function EditArticleForm({
   return (
     // handleSubmit(onSubmit)
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+
+        {/* Title */}
       <div className="flex flex-col gap-2">
         <Label>Title</Label>
         <Input
@@ -232,7 +236,9 @@ export default function EditArticleForm({
         {errors.title && (
           <p className="text-sm text-destructive">{errors.title.message}</p>
         )}
-      </div>
+      </div> 
+
+      {/* Description */}
       <div className="flex flex-col gap-2">
         <Label>Description</Label>
         <Textarea
@@ -244,7 +250,9 @@ export default function EditArticleForm({
             {errors.description.message}
           </p>
         )}
-      </div>
+      </div> 
+
+      {/* Slug */}  
       <div className="flex flex-col gap-2">
         <Label>Slug</Label>
         <Input
@@ -266,8 +274,9 @@ export default function EditArticleForm({
         {errors.slug && (
           <p className="text-sm text-destructive">{errors.slug.message}</p>
         )}
-      </div>
+      </div>    
 
+      {/* Continent */}
       <div className="flex flex-col gap-2">
         <Label>Continent</Label>
         <Controller
@@ -301,6 +310,7 @@ export default function EditArticleForm({
         )}
       </div>
 
+      {/* Legend */}
       {selectedContinent && (
         <div className="flex flex-col gap-2">
           <Label>Legend</Label>
@@ -338,6 +348,7 @@ export default function EditArticleForm({
         </div>
       )}
 
+      {/* Cover Image */}
       <div className="flex flex-col gap-2 mb-2">
         <Label>Cover Image</Label>
         {/* {imageUrl && <Image src={imageUrl} alt="Cover Image" />} */}
@@ -377,6 +388,7 @@ export default function EditArticleForm({
         )}
       </div>
 
+      {/* Story Content */}
       <div className="flex flex-col gap-2">
         <Label>Story Content</Label>
         <p className="text-sm text-muted-foreground">
@@ -390,6 +402,8 @@ export default function EditArticleForm({
         />
         <TailwindEditor initialValue={contentValue} onChange={setContentValue} />
       </div>
+
+      {/* Story Status */}
       <div className="flex flex-col gap-2">
         <Label>Story Status</Label>
         <p className="text-sm text-muted-foreground">
@@ -420,6 +434,21 @@ export default function EditArticleForm({
           <p className="text-sm text-destructive">{errors.status.message}</p>
         )}
       </div>
+
+      {/* Tags */}
+      <div className="flex flex-col gap-2">
+        <Label>Tags</Label>
+        <Input
+          placeholder="Add comma-separated tags"
+          {...register("tags")}
+          
+        />
+        {errors.tags && (
+          <p className="text-sm text-destructive">{errors.tags.message}</p>
+        )}
+      </div>
+
+      {/* Submit Button */}
       {isSubmitting ? (
         <Button type="submit"  className="w-fit"><Loader2 className="size-4 mr-2 animate-spin" />Update Story</Button>
       ) : (

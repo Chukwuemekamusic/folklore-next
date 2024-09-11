@@ -1,14 +1,15 @@
-import { NextApiRequest } from "next";
+import { NextRequest } from "next/server";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
 
-export async function GET(request: NextApiRequest) {
+export async function GET(request: NextRequest) {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
   
   if (!user || user === null || user === undefined || !user.email || !user.id) {
-    throw new Error("User not found");
+    // throw new Error("User not found");
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
   let dbUser = await prisma.user.findUnique({

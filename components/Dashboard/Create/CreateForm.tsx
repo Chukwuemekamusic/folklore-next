@@ -29,6 +29,7 @@ import axios from "axios";
 import slugify from "react-slugify";
 import { useRouter } from "next/navigation";
 import { storyStatus } from "@/constants";
+import { SubmitButton } from "../forms/SubmitButton";
 
 interface Legend {
   id: string;
@@ -76,6 +77,7 @@ export default function CreateStoryForm({
       content: "TODO",
       image: "",
       status: "DRAFT",
+      tags: "",
     },
   });
 
@@ -383,7 +385,21 @@ export default function CreateStoryForm({
           )}
         />
       </div>
-      <Button type="submit">Create Story</Button>
+      <div className="flex flex-col gap-2">
+        <Label>Tags <span className="text-xs text-blue-500">(Max 5)</span></Label>
+        <Input
+          placeholder="tag1, tag2, tag3"
+          {...register("tags")}
+        />
+        <p className="text-sm text-muted-foreground">
+          Add comma-separated tags to improve search and categorization. 
+        </p>
+        {errors.tags && (
+          <p className="text-sm text-destructive">{errors.tags.message}</p>
+        )}
+      </div>
+      {/* Submit Button */}
+      <SubmitButton text="Create Story" isSubmitting={isSubmitting} className="w-full" />
     </form>
   );
 }

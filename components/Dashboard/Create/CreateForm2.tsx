@@ -30,6 +30,7 @@ import slugify from "react-slugify";
 import { useRouter } from "next/navigation";
 import { storyStatus } from "@/constants";
 import { createStoryAction2 } from "@/actions/createService";
+import { SubmitButton } from "../forms/SubmitButton";
 
 interface Legend {
   id: string;
@@ -76,6 +77,7 @@ export default function CreateStoryForm2({
       content: "TODO",
       image: "",
       status: "DRAFT",
+      tags: "",
     },
   });
 
@@ -108,7 +110,6 @@ export default function CreateStoryForm2({
       data.image = imageUrl;
     }
     data.content = JSON.stringify(contentValue);
-    console.log("data", data);
 
     data.slug = await checkSlugUniqueness(data.slug);
 
@@ -178,6 +179,7 @@ export default function CreateStoryForm2({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+      {/* Title input */}
       <div className="flex flex-col gap-2">
         <Label>Title</Label>
         <Input
@@ -191,6 +193,7 @@ export default function CreateStoryForm2({
           <p className="text-sm text-destructive">{errors.title.message}</p>
         )}
       </div>
+      {/* Description input */}
       <div className="flex flex-col gap-2">
         <Label>Description</Label>
         <Textarea
@@ -203,6 +206,7 @@ export default function CreateStoryForm2({
           </p>
         )}
       </div>
+      {/* Slug input */}
       <div className="flex flex-col gap-2">
         <Label>Slug</Label>
         <Input
@@ -226,6 +230,7 @@ export default function CreateStoryForm2({
         )}
       </div>
 
+      {/* Continent input */}
       <div className="flex flex-col gap-2">
         <Label>Continent</Label>
         <Controller
@@ -258,6 +263,7 @@ export default function CreateStoryForm2({
         )}
       </div>
 
+      {/* Legend input */}
       {selectedContinent && (
         <div className="flex flex-col gap-2">
           <Label>Legend</Label>
@@ -294,6 +300,7 @@ export default function CreateStoryForm2({
         </div>
       )}
 
+      {/* Cover Image */}
       <div className="flex flex-col gap-2 mb-2">
         <Label>Cover Image</Label>
         {/* {imageUrl && <Image src={imageUrl} alt="Cover Image" />} */}
@@ -332,6 +339,8 @@ export default function CreateStoryForm2({
           <p className="text-sm text-destructive">{errors.image.message}</p>
         )}
       </div>
+
+      {/* Story Content */}
       <div className="flex flex-col gap-2">
         <Label>Story Content</Label>
         <p className="text-sm text-muted-foreground">
@@ -345,6 +354,8 @@ export default function CreateStoryForm2({
         />
         <TailwindEditor initialValue={contentValue} onChange={setContentValue} />
       </div>
+
+      {/* Story Status */}
       <div className="flex flex-col gap-2">
         <Label>Story Status</Label>
         <p className="text-sm text-muted-foreground">
@@ -372,7 +383,23 @@ export default function CreateStoryForm2({
           )}
         />
       </div>
-      <Button type="submit">Create Story</Button>
+
+      {/* Tags */}
+      <div className="flex flex-col gap-2 mb-2">
+        <Label>Tags <span className="text-xs text-blue-500">(Max 5)</span></Label>
+        <Input
+          placeholder="tag1, tag2, tag3"
+          {...register("tags")}
+        />
+        <p className="text-sm text-blue-500">
+          Add comma-separated tags to improve search and categorization. 
+        </p>
+        {errors.tags && (
+          <p className="text-sm text-destructive">{errors.tags.message}</p>
+        )}
+      </div>
+      {/* Submit Button */}
+      <SubmitButton text="Create Story" isSubmitting={isSubmitting} className="w-full" />
     </form>
   );
 }

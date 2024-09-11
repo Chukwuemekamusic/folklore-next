@@ -63,9 +63,9 @@ model Story {
   id            String       @default(cuid()) @id
   title         String
   description   String
-  content       Json?
+  content       Json
   image         String?
-  slug          String? @unique 
+  slug          String @unique 
   continent     Continent @relation(fields: [continentId], references: [id])
   continentId   String
   legend        Legend @relation(fields: [legendId], references: [id])
@@ -89,7 +89,7 @@ model Story {
 
 model Tag {
   id            String       @default(cuid()) @id
-  name          String
+  name          String       @unique
   stories       Story[]
   @@map(name: "tags")
 }

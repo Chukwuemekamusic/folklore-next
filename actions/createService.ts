@@ -9,6 +9,10 @@ import { toast } from "sonner";
 import { StoryStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
 
+const convertTagsToArray = (tags: string) => {
+  return tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+}
+
 export async function createStoryAction(
   prevState: any,
   data: TcreateStorySchema
@@ -30,10 +34,12 @@ export async function createStoryAction(
     continentName,
     slug,
     status,
+    tags,
   } = submission.data;
 
   const storyStatus = status as StoryStatus;
   const storyContent = JSON.parse(content);
+  const tagsArray = convertTagsToArray(tags);
 
   const story = await prisma.story.create({
     data: {
@@ -56,6 +62,14 @@ export async function createStoryAction(
         },
       },
       status: storyStatus,
+      ...(tagsArray.length > 0 && {
+        tags: {
+          connectOrCreate: tagsArray.map(tag => ({
+            where: { name: tag },
+            create: { name: tag }
+          }))
+        }
+      })
     },
   });
 
@@ -93,10 +107,12 @@ export async function editStoryAction2(
     continentName,
     slug,
     status,
+    tags,
   } = submission.data;
 
   const storyStatus = status as StoryStatus;
   const storyContent = JSON.parse(content);
+  const tagsArray = convertTagsToArray(tags);
 
   const story = await prisma.story.update({
     where: { id: storyId },
@@ -120,6 +136,14 @@ export async function editStoryAction2(
         },
       },
       status: storyStatus,
+      ...(tagsArray.length > 0 && {
+        tags: {
+          connectOrCreate: tagsArray.map(tag => ({
+            where: { name: tag },
+            create: { name: tag }
+          }))
+        }
+      })
     },
   });
 
@@ -160,10 +184,12 @@ export async function createStoryAction2(
     continentName,
     slug,
     status,
+    tags,
   } = submission.data;
 
   const storyStatus = status as StoryStatus;
   const storyContent = JSON.parse(content);
+  const tagsArray = convertTagsToArray(tags);
 
   const story = await prisma.story.create({
     data: {
@@ -186,6 +212,14 @@ export async function createStoryAction2(
         },
       },
       status: storyStatus,
+      ...(tagsArray.length > 0 && {
+        tags: {
+          connectOrCreate: tagsArray.map(tag => ({
+            where: { name: tag },
+            create: { name: tag }
+          }))
+        }
+      })
     },
   });
 
@@ -232,10 +266,12 @@ export async function editStoryAction(
     continentName,
     slug,
     status,
+    tags,
   } = submission.data;
 
   const storyStatus = status as StoryStatus;
   const storyContent = JSON.parse(content);
+  const tagsArray = convertTagsToArray(tags);
 
   const story = await prisma.story.update({
     where: { id: storyId },
@@ -259,6 +295,14 @@ export async function editStoryAction(
         },
       },
       status: storyStatus,
+      ...(tagsArray.length > 0 && {
+        tags: {
+          connectOrCreate: tagsArray.map(tag => ({
+            where: { name: tag },
+            create: { name: tag }
+          }))
+        }
+      })
     },
   });
 
