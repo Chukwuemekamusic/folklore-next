@@ -34,6 +34,7 @@ model User {
   firstName     String?
   lastName      String?
   profileImage  String?
+  authorName    String?   @map(name: "author_name")
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   posts         Post[]

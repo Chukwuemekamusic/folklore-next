@@ -6,6 +6,7 @@ import prisma from "@/lib/db";
 export async function GET(request: NextRequest) {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
+  console.log(user);
   
   if (!user || user === null || user === undefined || !user.email || !user.id) {
     // throw new Error("User not found");
@@ -27,6 +28,7 @@ export async function GET(request: NextRequest) {
         lastName: user.family_name ?? '',
         name: `${user.given_name ?? ''} ${user.family_name ?? ''}`.trim(),
         profileImage: user.picture ?? `https://avatar.vercel.sh/${user.given_name ?? ''}`,
+        authorName: user.properties?.author_name ?? '',
 
       },
     });

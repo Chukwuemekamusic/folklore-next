@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { MapPin, Book, CircleUser } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import Image from "next/image";
 
 import { getAllContinentsWithStoryCount, getLegendsOfAvailableStories } from "@/actions/storyService";
 import {RegisterLink, LoginLink, LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
@@ -21,8 +22,10 @@ import {getKindeServerSession} from "@kinde-oss/kinde-auth-nextjs/server";
 const Navbar = async () => {
   const continents = await getAllContinentsWithStoryCount();
   const legends = await getLegendsOfAvailableStories();
-  const { getUser } = getKindeServerSession();
-  const session = await getUser();
+  const { getUser, isAuthenticated } = getKindeServerSession();
+  const user = await getUser();
+  const isUserAuthenticated = await isAuthenticated();
+
   return (
     <header className="flex items-center justify-between p-6 md:p-8 bg-muted/30">
       <nav className="flex items-center justify-between w-full">
@@ -93,11 +96,11 @@ const Navbar = async () => {
                   size="icon"
                   className="rounded-full"
                 >
-                  <CircleUser className="h-5 w-5" />
+                  {isUserAuthenticated && user && user.email && user.picture ? <Image src={user.picture} alt="profile" width={30} height={30} className="rounded-full" /> : <CircleUser className="h-5 w-5" />}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {session && session.email ? (
+                {isUserAuthenticated && user && user.email ? (
                   <>
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard">Dashboard</Link>
